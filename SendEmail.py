@@ -47,7 +47,7 @@ def read_config_file():
         print e
 
 
-def send_mail():
+def send_mail(test_module):
     from_addr = CONFIG['FROM']
     password = CONFIG['PASSWORD']
     smtp_server = CONFIG['SMTP']
@@ -57,9 +57,9 @@ def send_mail():
     msg = MIMEMultipart()
     msg['From'] = _format_add(u"OSPerformance<%s>" % from_addr)
     msg['To'] = _format_add(u"Tester<%s>" % to_addr)
-    msg['Subject'] = Header(u"OSPerformance test finish...", "utf-8").encode()
+    msg['Subject'] = Header(u"OSPerformance test finish... %s" % test_module, "utf-8").encode()
     # Email body
-    msg.attach(MIMEText('Test finished. \nResult please refer to the attachment'))
+    msg.attach(MIMEText(test_module + ' Test finished. \nResult please refer to the attachment'))
     # Email attachment
     with open('E:/Automation/performance_1117/performance/Binaries/ProfileTargets/AOStargets/square-compat.xml', 'rb') as f:
         mime = MIMEBase('xml', 'xml', filename='test.xml')
@@ -76,6 +76,11 @@ def send_mail():
     server.sendmail(from_addr, [to_addr], msg.as_string())
     server.quit()
 
-if __name__ == '__main__':
+
+def main(test_module):
+    # print os.path.basename(__file__)
     read_config_file()
-    send_mail()
+    send_mail(test_module)
+
+if __name__ == '__main__':
+    main()
